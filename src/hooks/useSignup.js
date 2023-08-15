@@ -1,7 +1,7 @@
 import { useState } from "react"
 import { projectAuth } from "../firebase/config"
 
-const useSignup = () => {
+export const useSignup = () => {
     const [error, setError] = useState(null);
     const [isPending, setIsPending] = useState(false);
 
@@ -21,7 +21,7 @@ const useSignup = () => {
                 throw new Error("Could not complete signup");
             }
 
-            // add the display name to user in DB
+            // add the displayName to user in DB
             await response.user.updateProfile( {displayName: displayName} );    // with response we get a user object
 
             setIsPending(false);
@@ -37,5 +37,3 @@ const useSignup = () => {
 
     return { error, isPending, signup };
 }
-
-export default useSignup
