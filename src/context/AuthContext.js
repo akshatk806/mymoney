@@ -5,6 +5,9 @@ export const AuthContext = createContext();
 
 export const authReducer = (state, action) => {
     switch(action.type) {
+        case 'LOGIN': 
+            return { ...state, user: action.payload } // the user key in this object is override
+
         default:
             return state
     }
@@ -15,6 +18,8 @@ export const AuthContextProvider = ( {children} ) => {
     const [state, dispatch] = useReducer(authReducer, {
         user: null
     });
+
+    console.log('AuthContext state:', state)   // whenever the state changes in component the component is revaluates
 
     // return the template
     return (
