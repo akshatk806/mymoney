@@ -7,10 +7,10 @@ export const AuthContext = createContext();
 export const authReducer = (state, action) => {
     switch(action.type) {
         case 'LOGIN': 
-            return { ...state, user: action.payload } // the user key in this object is override
+            return { ...state, user: action.payload } // the user key in this object is override(we update our global auth state)
 
         case 'LOGOUT':
-            return { ...state, user:null }
+            return { ...state, user:null }    // we update our global auth state
 
         default:
             return state
