@@ -3,10 +3,14 @@ import { createContext, useReducer } from "react";
 // that creates a new context for us which is now stored in AuthContext
 export const AuthContext = createContext();
 
+// when dispatch function is called the control moves here
 export const authReducer = (state, action) => {
     switch(action.type) {
         case 'LOGIN': 
             return { ...state, user: action.payload } // the user key in this object is override
+
+        case 'LOGOUT':
+            return { ...state, user:null }
 
         default:
             return state
