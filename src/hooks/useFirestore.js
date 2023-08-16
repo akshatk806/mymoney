@@ -1,5 +1,5 @@
 import { useReducer, useEffect, useState } from "react";
-import { projectFirestore } from "../firebase/config"
+import { projectFirestore, timestamp } from "../firebase/config"
 
 // we create initialState as reference and we keep initalState outside of hook because I don't want new copy of response everytime the hook is used 
 let initialState = {
@@ -44,7 +44,8 @@ export const useFirestore = (collection) => {
         dispatch({ type: 'IS_PENDING' })
 
         try {
-            const addedDocument = await ref.add(doc)  // adding a document to collection
+            const createdAt = timestamp.fromDate(new Date());
+            const addedDocument = await ref.add({ ...doc, createdAt })  // adding a document to collection   // doc = {name, amount} is a javascript object
             dispatchIfNotCancelled({ type: 'ADDED_DOCUMENT', payload: addedDocument })   // addedDocument is a reference of document that we get back
         } 
         catch (err) {
