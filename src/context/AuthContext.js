@@ -19,7 +19,7 @@ export const authReducer = (state, action) => {
 
 // custom AuthContext Provider component, which wrap the provider of 'AuthContext' context
 export const AuthContextProvider = ( {children} ) => {
-    const [state, dispatch] = useReducer(authReducer, {
+    const [state, dispatch] = useReducer(authReducer, {     // whenever the dispatch is called then this component 'AuthContextProvider' is re-rendered again, in short this component function 'AuthContextProvider' is called again
         user: null
     });
 

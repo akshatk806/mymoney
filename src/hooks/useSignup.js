@@ -21,7 +21,17 @@ export const useSignup = () => {
             // signup the user
             const response = await projectAuth.createUserWithEmailAndPassword(email, password);   // when user signup then firebase automatically loggedin the user automatically
             // console.log(response.user);  // user just created
-            
+            /*
+            reponse.user = {
+                ----
+                ----
+                ----
+                displayName:
+                email:
+                ----
+                ----
+            }
+            */
 
             if(!response) {
                 throw new Error("Could not complete signup");
