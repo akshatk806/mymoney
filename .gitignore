@@ -24,3 +24,6 @@ yarn-error.log*
 
 #Videos
 /videos
+
+# firebase
+/.firebase
