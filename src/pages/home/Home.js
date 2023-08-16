@@ -8,7 +8,10 @@ import TransactionList from './TransactionList'
 
 const Home = () => {
   const { user } = useAuthContext();
-  const { documents, error } = useCollection('transactions');
+  const { documents, error } = useCollection(
+    'transactions', 
+    ["user_id", "==", user.uid]                 // query
+  );
 
   return (
     <div className={styles.container}>

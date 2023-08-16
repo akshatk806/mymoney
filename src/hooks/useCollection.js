@@ -1,13 +1,20 @@
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { projectFirestore } from "../firebase/config"
 
-export const useCollection = collection => {
+export const useCollection = (collection, _query) => {
     const [documents, setDocuments] = useState(null)   // the documents we retreive from collection i.e, transaction
     const [error, setError] = useState(null)
+
+    // if we don't use a ref --> infinite loop in useEffect because of reference types as dependency in useEffect
+    const query = useRef(_query).current      // actual array value
 
     useEffect(()=>{
         // real time listener of collection to firestore
         let ref = projectFirestore.collection(collection)
+
+        if(query) {
+            ref = ref.where(...query)
+        }
 
         // onSnapshot function fires a function for us everytime when we get the snapshot back from firestore collection. We get snapshot back once initially when we first made the connection and it sends us back a snapshot as argument inside function 
         const unsubscribe = ref.onSnapshot(snapshot => {      // this snapshot represents that collection at that moment in time we first connect to the collection which contains all the document to it. Thereafter it will fire this callback function again whenever the firestore collection changes
@@ -29,7 +36,7 @@ export const useCollection = collection => {
         // unsubscribe on unmount
         return () => unsubscribe();
 
-    }, [collection])
+    }, [collection, query])
 
     return { documents, error }
 }
