@@ -10,7 +10,8 @@ const Home = () => {
   const { user } = useAuthContext();
   const { documents, error } = useCollection(
     'transactions', 
-    ["user_id", "==", user.uid]                 // query
+    ["user_id", "==", user.uid],                 // query
+    ["createdAt", "desc"]
   );
 
   return (
