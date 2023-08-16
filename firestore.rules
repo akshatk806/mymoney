@@ -1,19 +1,17 @@
 rules_version = '2';
-
 service cloud.firestore {
   match /databases/{database}/documents {
+    match /transactions/{document=**} {
+      // allow read, write;   // allow read and write access forever (I can update document). The write access is combination of {create, delete, update}
+      // allow read, create, delete;   // I can't update the document
+      // allow read, create, delete, update;  // same as allow read, write;
 
-    // This rule allows anyone with your Firestore database reference to view, edit,
-    // and delete all data in your Firestore database. It is useful for getting
-    // started, but it is configured to expire after 30 days because it
-    // leaves your app open to attackers. At that time, all client
-    // requests to your Firestore database will be denied.
-    //
-    // Make sure to write security rules for your app before that time, or else
-    // all client requests to your Firestore database will be denied until you Update
-    // your rules
-    match /{document=**} {
-      allow read, write: if request.time < timestamp.date(2023, 9, 15);
+      // only authenticated user allow to create documents, because users authentication tokens is send to the server on request it made, If someone request to the datanbase it gets send to the server and firebase can validate the token and see if user is authenticated or not
+      allow create: if request.auth != null;   // then user is allowed to create document
+
+      // loggedin user uid must match the document creater to read & delete
+      allow read, delete: if request.auth.uid == resource.data.user_id;  // request.auth.uid-> uid of the user who making the request. resource.data.uid-> uid in the document we are try to fetch (document here is resource)
+      // auth.id is predefined and user_id is declared by me
     }
   }
 }
