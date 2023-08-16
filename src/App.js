@@ -1,6 +1,6 @@
 import './App.css'
 
-import { BrowserRouter, Switch, Route } from 'react-router-dom';
+import { BrowserRouter, Switch, Route, Redirect } from 'react-router-dom';
 
 // hooks
 import { useAuthContext } from './hooks/useAuthContext';
@@ -11,7 +11,7 @@ import Signup from './pages/signup/Signup';
 import Navbar from './components/Navbar'
 
 function App() {
-  const { authIsReady } = useAuthContext()
+  const { authIsReady, user } = useAuthContext()
   // now we don't see that flickering on navbar
   return (
     <div className="App">
@@ -19,14 +19,18 @@ function App() {
         <BrowserRouter>
           <Navbar />
           <Switch>
-            <Route exact path="/">
-              <Home />
+            <Route exact path="/"> 
+              {/* if user is loggedin then only he can visit to Home page, protection of pages from attackers */}
+              {!user && <Redirect to="/login" />}
+              {user && <Home />}
             </Route>
             <Route path="/login">
-              <Login />
+              {user && <Redirect to="/" />}
+              {!user && <Login />}
             </Route>
             <Route path="/signup">
-              <Signup />
+              {user && <Redirect to="/" />}
+              {!user && <Signup />}
             </Route>
           </Switch>
         </BrowserRouter>
