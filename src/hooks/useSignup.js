@@ -1,10 +1,13 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { projectAuth } from "../firebase/config"
 
 // import useAuthContext hook so that we have access to that context object, and in that context object we have dispatch function
 import { useAuthContext } from './useAuthContext'
 
 export const useSignup = () => {
+    // state variable for cancelling the subscription
+    const [isCancelled, setIsCancelled] = useState(false)
+
     const [error, setError] = useState(null);
     const [isPending, setIsPending] = useState(false);
 
@@ -43,16 +46,26 @@ export const useSignup = () => {
             // dipatch login action
             dispatch({ type: 'LOGIN', payload: response.user})           // the input to dipatch method is action, which has two property i.e, type of action and payload 
 
-            setIsPending(false);
-            setError(null);
+            // update state (after component unmount we don't allow states to updating)
+            if(!isCancelled) {
+                setIsPending(false);
+                setError(null);
+            }
+            // because only state update can rerendered the component
         }
         catch(err) {
             // if signup fails then we catch the error
-            console.log(err.message);
-            setError(err.message);         // like email is already taken etc.
-            setIsPending(false);
+            if(!isCancelled) {
+                console.log(err.message);
+                setError(err.message);         // like email is already taken etc.
+                setIsPending(false);
+            }
         }
     }
+
+    useEffect(() => {
+        return () => setIsCancelled(true)    // we want to cancel whatever is going on backgroud (asynchronous task)
+    }, [])   // empty array for initial component render
 
     return { error, isPending, signup };
 }
