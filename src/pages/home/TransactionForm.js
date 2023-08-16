@@ -1,17 +1,37 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 
-const TransactionForm = () => {
+import { useFirestore } from "../../hooks/useFirestore";
+
+const TransactionForm = (props) => {
     // state variables
     const [name, setName] = useState('');
     const [amount, setAmount] = useState('');
 
+    const { addDocument, response } = useFirestore('transactions');    // 'transactions' is a collection
+
     const handleSubmit = e => {
         e.preventDefault();
-        console.log({
-            name,
+        // console.log({
+        //     name,
+        //     amount
+        // })
+
+        // add document
+        addDocument({
+            user_id: props.user_id,
+            name, 
             amount
         })
     }
+
+    // after we added the document (means filling the transaction form) we have to clear the field
+    useEffect(()=>{
+        if(response.success) {
+            // reset form field
+            setName('');
+            setAmount('');
+        }
+    }, [response.success])
 
   return (
     <>
